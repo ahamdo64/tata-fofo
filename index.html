@@ -58,10 +58,8 @@
     .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--primary-dark); }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0d5c9; border-radius: 10px; font-family: inherit; transition: var(--transition); background: #faf8f5; }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(192, 122, 91, 0.2); }
-    .file-upload { border: 2px dashed var(--primary-light); padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; transition: var(--transition); background: #fdfbf9; }
-    .file-upload:hover { border-color: var(--primary); background: #fff; }
-    .preview-box { margin-top: 10px; width: 100px; height: 100px; border-radius: 10px; overflow: hidden; border: 2px solid var(--primary-light); display: none; }
-    .preview-box img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-box { margin-top: 10px; width: 100%; max-width: 300px; height: 200px; border-radius: 10px; overflow: hidden; border: 2px solid var(--primary-light); display: none; margin: 10px auto; }
+    .preview-box img { width: 100%; height: 100%; object-fit: contain; }
     
     .table-container { overflow-x: auto; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); }
     table { width: 100%; border-collapse: collapse; }
@@ -96,6 +94,9 @@
     .success { background: #d4edda; color: #155724; }
     .error { background: #f8d7da; color: #721c24; }
     .info { background: #cce5ff; color: #004085; }
+    
+    .help-box { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.9rem; }
+    .help-box code { background: #f8f9fa; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
     
     @media (max-width: 768px) {
       .nav-links { position: fixed; top: 70px; right: -100%; width: 70%; height: calc(100vh - 70px); background: var(--white); flex-direction: column; padding: 30px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: var(--transition); }
@@ -149,6 +150,16 @@
     <h2>إضافة منتج جديد</h2>
     <p class="section-desc">أضفي منتجك الجديد لعرضه على الصفحة</p>
     <div class="form-card">
+      
+      <!-- صندوق مساعدة -->
+      <div class="help-box">
+        <strong>📷 طريقة رفع الصور (يدوياً):</strong><br>
+        1️⃣ ارفعي الصورة إلى مجلد <code>images/</code> في مستودع GitHub<br>
+        2️⃣ افتحي الصورة في المستودع وانقري على <strong>"Raw"</strong><br>
+        3️ انسخي الرابط من شريط العنوان (يبدأ بـ <code>https://raw.githubusercontent.com/...</code>)<br>
+        4️ ألصقي الرابط في الحقل أدناه
+      </div>
+
       <form id="productForm">
         <div class="form-row">
           <div class="form-group"><label>اسم المنتج *</label><input type="text" id="pName" required placeholder="مثال: حقيبة بيج كروشي"></div>
@@ -165,11 +176,19 @@
           </div>
           <div class="form-group"><label>اللون</label><input type="text" id="pColor" placeholder="مثال: بيج، أزرق سماوي..."></div>
         </div>
+        
+        <!-- حقل رابط الصورة -->
         <div class="form-group">
-          <label>📷 اختيار صورة من الجهاز *</label>
-          <input type="file" id="pFile" accept="image/*" class="file-upload" required>
-          <div class="preview-box" id="previewBox"><img id="previewImg" alt="معاينة"></div>
+          <label>🔗 رابط الصورة المباشر *</label>
+          <input type="url" id="pImageUrl" required placeholder="https://raw.githubusercontent.com/.../images/bag1.jpg">
+          <small style="color:var(--text-light); display:block; margin-top:5px;">💡 يجب أن يكون الرابط مباشراً وينتهي بـ .jpg أو .png</small>
         </div>
+        
+        <!-- معاينة الصورة -->
+        <div class="preview-box" id="previewBox">
+          <img id="previewImg" alt="معاينة">
+        </div>
+        
         <div class="form-group"><label>وصف المنتج</label><textarea id="pDesc" rows="3" placeholder="وصف مختصر للمنتج..."></textarea></div>
         <button type="submit" class="btn">✅ إضافة المنتج</button>
       </form>
@@ -245,10 +264,9 @@
     </div>
   </div>
 
-  <!-- 🔥 Firebase SDKs (Compat Version for CDN) -->
+  <!-- 🔥 Firebase SDKs (Compat Version) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
   <script>
     // ✅ إعدادات مشروعك
@@ -265,7 +283,6 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     const productForm = document.getElementById('productForm');
     const productsGrid = document.getElementById('productsGrid');
@@ -282,16 +299,19 @@
       setTimeout(() => statusMsg.style.display = 'none', 4000);
     }
 
-    document.getElementById('pFile').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if(file){
-        const reader = new FileReader();
-        reader.onload = ev => { previewImg.src = ev.target.result; previewBox.style.display = 'block'; };
-        reader.readAsDataURL(file);
+    // معاينة الصورة عند إدخال الرابط
+    document.getElementById('pImageUrl').addEventListener('input', e => {
+      const url = e.target.value.trim();
+      if(url && (url.endsWith('.jpg') || url.endsWith('.jpeg') || url.endsWith('.png') || url.endsWith('.webp'))) {
+        previewImg.src = url;
+        previewImg.onerror = () => { previewImg.src = 'https://via.placeholder.com/300x200?text=Invalid+URL'; };
+        previewBox.style.display = 'block';
+      } else {
+        previewBox.style.display = 'none';
       }
     });
 
-    // 1️⃣ إضافة منتج
+    // 1️⃣ إضافة منتج (بدون رفع صورة - نستخدم الرابط المباشر)
     productForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('pName').value.trim();
@@ -299,19 +319,15 @@
       const category = document.getElementById('pCat').value;
       const color = document.getElementById('pColor').value.trim();
       const desc = document.getElementById('pDesc').value.trim();
-      const file = document.getElementById('pFile').files[0];
+      const imageUrl = document.getElementById('pImageUrl').value.trim();
 
-      if(!name || !price || !file) return showStatus('يرجى تعبئة الحقول الإلزامية واختيار صورة', 'error');
-      showStatus('📤 جاري رفع الصورة وحفظ المنتج...', 'info');
+      if(!name || !price || !imageUrl) return showStatus('يرجى تعبئة الحقول الإلزامية ورابط الصورة', 'error');
+      
+      showStatus('📤 جاري حفظ المنتج...', 'info');
 
       try {
-        const storageRef = storage.ref(`products/${Date.now()}_${file.name}`);
-        const snapshot = await storageRef.put(file);
-        const downloadURL = await snapshot.ref.getDownloadURL();
-
         await db.collection('products').add({
-          name, price, category, color, desc,
-          imageUrl: downloadURL,
+          name, price, category, color, desc, imageUrl,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         showStatus('✅ تم إضافة المنتج بنجاح!', 'success');
@@ -338,14 +354,14 @@
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-          <img src="${p.imageUrl}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/300x260?text=No+Image'">
+          <img src="${p.imageUrl}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/300x260?text=Image+Not+Found'">
           <div class="product-info">
             <h3>${p.name}</h3>
             <p class="price">${p.price} ل.س</p>
             <p class="meta">${p.category} ${p.color ? '| ' + p.color : ''}</p>
             <p class="desc">${p.desc || ''}</p>
             <button class="btn btn-reserve" data-id="${doc.id}" data-name="${p.name}" data-price="${p.price}">🛒 حجز المنتج</button>
-            <button class="btn btn-delete" onclick="deleteProduct('${doc.id}', '${p.imageUrl}')">️ حذف</button>
+            <button class="btn btn-delete" onclick="deleteProduct('${doc.id}')">🗑️ حذف</button>
           </div>
         `;
         productsGrid.appendChild(card);
@@ -361,11 +377,10 @@
       });
     });
 
-    // 3️⃣ حذف منتج
-    window.deleteProduct = async (docId, imgUrl) => {
+    // 3️⃣ حذف منتج (البيانات فقط - الصورة تبقى على GitHub)
+    window.deleteProduct = async (docId) => {
       if(!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
       try {
-        await storage.refFromURL(imgUrl).delete();
         await db.collection('products').doc(docId).delete();
         showStatus('✅ تم الحذف بنجاح', 'success');
       } catch(err) {
@@ -408,7 +423,7 @@
         row.innerHTML = `
           <td>${idx + 1}</td><td>${b.productName}</td><td>${b.name}</td><td>${b.phone}</td>
           <td>${b.createdAt?.toDate().toLocaleDateString('ar-SY') || '...'}</td>
-          <td><span class="badge ${b.status === 'done' ? 'badge-done' : 'badge-pending'}" style="padding:4px 8px;border-radius:12px;background:${b.status==='done'?'#c8f7dc':'#ffeaa7'};color:${b.status==='done'?'#1e824c':'#d35400'}">${b.status === 'done' ? 'مكتمل' : 'قيد الانتظار'}</span></td>
+          <td><span style="padding:4px 8px;border-radius:12px;background:${b.status==='done'?'#c8f7dc':'#ffeaa7'};color:${b.status==='done'?'#1e824c':'#d35400'}">${b.status === 'done' ? 'مكتمل' : 'قيد الانتظار'}</span></td>
           <td><button class="btn" onclick="toggleBooking('${doc.id}', '${b.status}')" style="padding:6px 12px;font-size:0.85rem;">${b.status === 'done' ? 'إعادة فتح' : 'إنهاء'}</button></td>
         `;
         bookBody.appendChild(row);
