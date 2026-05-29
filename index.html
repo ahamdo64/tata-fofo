@@ -1,0 +1,503 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tata-Fofo | حقائب كروشيه هاند مايد</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #c07a5b; --primary-light: #e9b89e; --primary-dark: #8b5a3c;
+      --secondary: #f8f1e8; --accent: #d4a373; --text: #3a3a3a; --text-light: #6b6b6b;
+      --white: #ffffff; --shadow: 0 8px 24px rgba(0,0,0,0.08); --radius: 14px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--secondary); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    
+    /* Header & Nav */
+    header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+    .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
+    .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-dark); text-decoration: none; }
+    .nav-links { display: flex; gap: 20px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; position: relative; padding: 5px 0; transition: 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .hamburger { display: none; cursor: pointer; font-size: 1.5rem; }
+    
+    /* Hero */
+    .hero { background: linear-gradient(135deg, var(--secondary) 0%, #f0e3d5 100%); padding: 80px 20px 60px; text-align: center; position: relative; overflow: hidden; }
+    .hero h1 { font-size: 2.8rem; margin-bottom: 15px; color: var(--primary-dark); }
+    .hero p { font-size: 1.2rem; max-width: 700px; margin: 0 auto 30px; color: var(--text-light); }
+    .hero-stats { display: flex; justify-content: center; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
+    .stat-box { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); min-width: 140px; transition: var(--transition); }
+    .stat-box:hover { transform: translateY(-8px); }
+    .stat-box h3 { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
+    
+    /* Sections */
+    section { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
+    h2 { font-size: 2rem; color: var(--primary-dark); margin-bottom: 10px; position: relative; display: inline-block; }
+    h2::after { content: ''; position: absolute; bottom: -6px; right: 0; width: 50%; height: 3px; background: var(--accent); border-radius: 3px; }
+    .section-desc { color: var(--text-light); margin-bottom: 30px; }
+    
+    /* Products Grid */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
+    .product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); position: relative; }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+    .product-img { width: 100%; height: 260px; object-fit: cover; background: #eee; }
+    .product-info { padding: 18px; }
+    .product-info h3 { font-size: 1.2rem; margin-bottom: 5px; }
+    .price { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
+    .meta { color: var(--text-light); font-size: 0.9rem; margin: 8px 0; }
+    
+    /* Buttons */
+    .btn { display: inline-block; padding: 10px 22px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: var(--transition); text-decoration: none; }
+    .btn:hover { background: var(--primary-dark); transform: scale(1.03); }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: #fff; }
+    .btn-delete { background: var(--danger, #e74c3c); padding: 6px 12px; font-size: 0.9rem; margin-top: 10px; }
+    .btn-reserve { background: var(--success, #27ae60); padding: 8px 16px; font-size: 0.95rem; margin-top: 10px; }
+    
+    /* Form */
+    .form-card { background: var(--white); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 30px; }
+    .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
+    .form-group { flex: 1; min-width: 250px; margin-bottom: 18px; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--primary-dark); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0d5c9; border-radius: 10px; font-family: inherit; transition: var(--transition); background: #faf8f5; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(192, 122, 91, 0.2); }
+    .file-upload { border: 2px dashed var(--primary-light); padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; transition: var(--transition); background: #fdfbf9; }
+    .file-upload:hover { border-color: var(--primary); background: #fff; }
+    .preview-box { margin-top: 10px; width: 100px; height: 100px; border-radius: 10px; overflow: hidden; border: 2px solid var(--primary-light); display: none; }
+    .preview-box img { width: 100%; height: 100%; object-fit: cover; }
+    
+    /* Table */
+    .table-container { overflow-x: auto; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 12px; text-align: center; border-bottom: 1px solid #eee; }
+    th { background: var(--primary-light); color: var(--primary-dark); }
+    tr:hover { background: #faf8f5; }
+    
+    /* Features & Contact */
+    .features { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px; }
+    .feature { flex: 1; min-width: 200px; background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; transition: var(--transition); }
+    .feature:hover { transform: translateY(-5px); }
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .contact-card { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); text-align: center; }
+    .contact-card h4 { color: var(--primary); margin: 10px 0 5px; }
+    
+    /* Footer */
+    footer { background: var(--primary-dark); color: #fff; padding: 50px 20px 30px; margin-top: 60px; }
+    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+    .footer-col h4 { margin-bottom: 15px; color: var(--accent); }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 8px; }
+    .footer-col a { color: #e0d5c9; text-decoration: none; transition: 0.2s; }
+    .footer-col a:hover { color: #fff; padding-right: 5px; }
+    .copyright { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); color: #c9b8a8; }
+    
+    /* Modal */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+    .modal-content { background: var(--white); padding: 30px; border-radius: var(--radius); max-width: 450px; width: 100%; position: relative; animation: slideUp 0.3s ease; }
+    .close-modal { position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 1.5rem; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(15px, -15px); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    
+    /* Status Messages */
+    #statusMsg { display: none; padding: 12px; border-radius: 8px; margin: 15px 0; text-align: center; font-weight: bold; }
+    .success { background: #d4edda; color: #155724; }
+    .error { background: #f8d7da; color: #721c24; }
+    .info { background: #cce5ff; color: #004085; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links { position: fixed; top: 70px; right: -100%; width: 70%; height: calc(100vh - 70px); background: var(--white); flex-direction: column; padding: 30px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: var(--transition); }
+      .nav-links.active { right: 0; }
+      .hamburger { display: block; }
+      .hero h1 { font-size: 2rem; }
+      .hero-stats { gap: 15px; }
+      .stat-box { min-width: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <a href="#home" class="logo">TATA-FOFO</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">الرئيسية</a></li>
+        <li><a href="#products">المنتجات</a></li>
+        <li><a href="#add-product">إضافة منتج</a></li>
+        <li><a href="#reservations">الحجوزات</a></li>
+        <li><a href="#about">من نحن</a></li>
+        <li><a href="#contact">تواصل معنا</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">☰</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <h1>حقائب كروشيه فريدة من نوعها</h1>
+    <p>اكتشفي تشكيلتنا الرائعة من الحقائب اليدوية المصنوعة بأجود الخيوط وأدق التفاصيل. كل قطعة تعبير عن الفن والإبداع.</p>
+    <a href="#products" class="btn btn-outline">استعرض التشكيلة</a>
+    <div class="hero-stats">
+      <div class="stat-box"><h3 id="prodCount">0</h3><p>منتج متوفر</p></div>
+      <div class="stat-box"><h3 id="bookCount">0</h3><p>حجز نشط</p></div>
+      <div class="stat-box"><h3>100%</h3><p>يدوي الصنع</p></div>
+      <div class="stat-box"><h3>طرطوس</h3><p>المقر الرئيسي</p></div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section id="products" class="fade-in">
+    <h2>منتجاتنا</h2>
+    <p class="section-desc">تشكيلة متنوعة من الحقائب المصنوعة يدوياً بألوان وتصاميم فريدة</p>
+    <div id="statusMsg"></div>
+    <div class="products-grid" id="productsGrid">
+      <p style="grid-column:1/-1; text-align:center; color:var(--text-light); padding:40px 0;">⏳ جاري تحميل المنتجات من السحابة...</p>
+    </div>
+  </section>
+
+  <!-- Add Product -->
+  <section id="add-product" class="fade-in">
+    <h2>إضافة منتج جديد</h2>
+    <p class="section-desc">أضفي منتجك الجديد لعرضه على الصفحة</p>
+    <div class="form-card">
+      <form id="productForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>اسم المنتج *</label>
+            <input type="text" id="pName" required placeholder="مثال: حقيبة بيج كروشي">
+          </div>
+          <div class="form-group">
+            <label>السعر (ل.س) *</label>
+            <input type="number" id="pPrice" required placeholder="مثال: 25000">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>التصنيف</label>
+            <select id="pCat">
+              <option value="حقيبة يد">حقيبة يد</option>
+              <option value="حقيبة تسوق">حقيبة تسوق</option>
+              <option value="حقيبة سهرة">حقيبة سهرة</option>
+              <option value="حقيبة ظهر">حقيبة ظهر</option>
+              <option value="محفظة صغيرة">محفظة صغيرة</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>اللون</label>
+            <input type="text" id="pColor" placeholder="مثال: بيج، أزرق سماوي...">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>📷 اختيار صورة من الجهاز *</label>
+          <input type="file" id="pFile" accept="image/*" class="file-upload" required>
+          <small style="color:var(--text-light);">💡 سيتم رفع الصورة تلقائياً إلى السحابة</small>
+          <div class="preview-box" id="previewBox"><img id="previewImg" alt="معاينة"></div>
+        </div>
+        <div class="form-group">
+          <label>وصف المنتج</label>
+          <textarea id="pDesc" rows="3" placeholder="وصف مختصر للمنتج..."></textarea>
+        </div>
+        <button type="submit" class="btn">✅ إضافة المنتج</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Reservations -->
+  <section id="reservations" class="fade-in">
+    <h2>الحجوزات</h2>
+    <p class="section-desc">إدارة طلبات الحجز على المنتجات</p>
+    <div class="table-container">
+      <table id="bookTable">
+        <thead><tr><th>#</th><th>المنتج</th><th>اسم العميل</th><th>رقم الهاتف</th><th>تاريخ الحجز</th><th>الحالة</th><th>إجراء</th></tr></thead>
+        <tbody id="bookBody"></tbody>
+      </table>
+      <p id="noBooks" style="text-align:center; padding:30px; color:var(--text-light);">لا توجد حجوزات حالياً</p>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="fade-in">
+    <h2>قصة علامتنا التجارية</h2>
+    <p class="section-desc">تاتا-فوفو (Tata-Fofo) هي علامة تجارية متخصصة في صناعة الحقائب اليدوية باستخدام تقنية الكروشيه التقليدية. نؤمن بأن الجمال يكمن في التفاصيل، ولذلك نحرص على اختيار أجود الخيوط وتصميم كل قطعة بعناية فائقة.<br>كل حقيبة من حقائبنا تحمل في طياتها قصة فنية فريدة، مصنوعة بأيدٍ سورية ماهرة في مدينة طرطوس الساحلية الجميلة.</p>
+    <div class="features">
+      <div class="feature">🧶 خيوط عالية الجودة</div>
+      <div class="feature">✨ تصاميم فريدة</div>
+      <div class="feature">👐 صناعة يدوية 100%</div>
+      <div class="feature">🎨 ألوان متنوعة</div>
+      <div class="feature">💰 أسعار منافسة</div>
+      <div class="feature">🚚 توصيل متاح</div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="fade-in">
+    <h2>تواصل معنا</h2>
+    <p class="section-desc">نحن هنا لمساعدتك واستقبال طلباتك</p>
+    <div class="contact-grid">
+      <div class="contact-card"><h4>📞 اتصل بنا</h4><p>0998324188</p></div>
+      <div class="contact-card"><h4>📧 البريد الإلكتروني</h4><p>ahamdo64@gmail.com</p></div>
+      <div class="contact-card"><h4>📍 الموقع</h4><p>طرطوس - سوريا</p></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>TATA-FOFO</h4>
+        <p style="color:#e0d5c9;">علامة تجارية متخصصة في صناعة الحقائب اليدوية باستخدام تقنية الكروشيه التقليدية. نقدم لكِ أناقة وفناً في كل قطعة.</p>
+      </div>
+      <div class="footer-col">
+        <h4>روابط سريعة</h4>
+        <ul><li><a href="#home">الرئيسية</a></li><li><a href="#products">المنتجات</a></li><li><a href="#about">من نحن</a></li><li><a href="#contact">تواصل معنا</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>خدماتنا</h4>
+        <ul><li><a href="#">التوصيل</a></li><li><a href="#">تصاميم مخصصة</a></li><li><a href="#">هدايا</a></li><li><a href="#">تعاون تجاري</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h4>معلومات التواصل</h4>
+        <ul><li><a href="tel:0998324188">📞 0998324188</a></li><li><a href="mailto:ahamdo64@gmail.com">📧 ahamdo64@gmail.com</a></li><li><a href="#">📍 طرطوس - سوريا</a></li></ul>
+      </div>
+    </div>
+    <div class="copyright">© 2026 Tata-Fofo. جميع الحقوق محفوظة. | Handmade with ❤️ in Tartous</div>
+  </footer>
+
+  <!-- Booking Modal -->
+  <div class="modal" id="reserveModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3 style="margin-bottom:15px; color:var(--primary-dark);">حجز المنتج</h3>
+      <p id="modalProdName" style="margin-bottom:10px; font-weight:500;"></p>
+      <form id="reserveForm">
+        <input type="hidden" id="rProductId">
+        <input type="hidden" id="rProductName">
+        <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="rName" required></div>
+        <div class="form-group"><label>رقم الهاتف *</label><input type="tel" id="rPhone" required></div>
+        <div class="form-group"><label>ملاحظات (اختياري)</label><textarea id="rNote" rows="2"></textarea></div>
+        <button type="submit" class="btn" style="width:100%;">تأكيد الحجز</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 🔥 Firebase SDKs (Compat Version for CDN) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+  <script>
+    // ✅ إعدادات مشروعك (تم تحديثها ببياناتك)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDOvn4mXOfQ-tR_Y1C7kSVN_O0oHchM0YY",
+      authDomain: "tata-fofo.firebaseapp.com",
+      databaseURL: "https://tata-fofo-default-rtdb.firebaseio.com",
+      projectId: "tata-fofo",
+      storageBucket: "tata-fofo.firebasestorage.app",
+      messagingSenderId: "352969768605",
+      appId: "1:352969768605:web:5e0453a0f4d28af79f5e74",
+      measurementId: "G-1GZG4ZWEK4"
+    };
+
+    // تهيئة Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    // عناصر DOM
+    const productForm = document.getElementById('productForm');
+    const productsGrid = document.getElementById('productsGrid');
+    const bookBody = document.getElementById('bookBody');
+    const statusMsg = document.getElementById('statusMsg');
+    const previewBox = document.getElementById('previewBox');
+    const previewImg = document.getElementById('previewImg');
+    const modal = document.getElementById('reserveModal');
+
+    // عرض رسالة حالة
+    function showStatus(text, type) {
+      statusMsg.textContent = text;
+      statusMsg.className = type;
+      statusMsg.style.display = 'block';
+      setTimeout(() => statusMsg.style.display = 'none', 4000);
+    }
+
+    // معاينة الصورة
+    document.getElementById('pFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = ev => { previewImg.src = ev.target.result; previewBox.style.display = 'block'; };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 1️⃣ إضافة منتج (رفع الصورة + حفظ البيانات)
+    productForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('pName').value.trim();
+      const price = document.getElementById('pPrice').value.trim();
+      const category = document.getElementById('pCat').value;
+      const color = document.getElementById('pColor').value.trim();
+      const desc = document.getElementById('pDesc').value.trim();
+      const file = document.getElementById('pFile').files[0];
+
+      if(!name || !price || !file) return showStatus('يرجى تعبئة الحقول الإلزامية', 'error');
+
+      showStatus('📤 جاري رفع الصورة وحفظ المنتج...', 'info');
+
+      try {
+        // رفع الصورة إلى Storage
+        const storageRef = storage.ref(`products/${Date.now()}_${file.name}`);
+        const snapshot = await storageRef.put(file);
+        const downloadURL = await snapshot.ref.getDownloadURL();
+
+        // حفظ البيانات في Firestore
+        await db.collection('products').add({
+          name, price, category, color, desc,
+          imageUrl: downloadURL,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showStatus('✅ تم إضافة المنتج بنجاح!', 'success');
+        productForm.reset();
+        previewBox.style.display = 'none';
+      } catch(err) {
+        console.error(err);
+        showStatus('❌ خطأ: ' + err.message, 'error');
+      }
+    });
+
+    // 2️⃣ عرض المنتجات (تحديث لحظي)
+    db.collection('products').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+      productsGrid.innerHTML = '';
+      document.getElementById('prodCount').textContent = snapshot.size;
+      
+      if(snapshot.empty) {
+        productsGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-light); padding:40px 0;">لا توجد منتجات حالياً</p>';
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${p.imageUrl}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.src='https://via.placeholder.com/300x260?text=No+Image'">
+          <div class="product-info">
+            <h3>${p.name}</h3>
+            <p class="price">${p.price} ل.س</p>
+            <p class="meta">${p.category} ${p.color ? '| ' + p.color : ''}</p>
+            <p class="desc">${p.desc || ''}</p>
+            <button class="btn btn-reserve" data-id="${doc.id}" data-name="${p.name}" data-price="${p.price}">🛒 حجز المنتج</button>
+            <button class="btn btn-delete" onclick="deleteProduct('${doc.id}', '${p.imageUrl}')">🗑️ حذف</button>
+          </div>
+        `;
+        productsGrid.appendChild(card);
+      });
+
+      // تفعيل أزرار الحجز
+      document.querySelectorAll('.btn-reserve').forEach(btn => {
+        btn.addEventListener('click', e => {
+          document.getElementById('rProductId').value = btn.dataset.id;
+          document.getElementById('rProductName').value = btn.dataset.name;
+          document.getElementById('modalProdName').textContent = `${btn.dataset.name} - ${btn.dataset.price} ل.س`;
+          modal.style.display = 'flex';
+        });
+      });
+    });
+
+    // 3️⃣ حذف منتج
+    window.deleteProduct = async (docId, imgUrl) => {
+      if(!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
+      try {
+        await storage.refFromURL(imgUrl).delete();
+        await db.collection('products').doc(docId).delete();
+        showStatus('✅ تم الحذف بنجاح', 'success');
+      } catch(err) {
+        showStatus('❌ فشل الحذف: ' + err.message, 'error');
+      }
+    };
+
+    // 4️⃣ نظام الحجوزات
+    document.getElementById('reserveForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const productId = document.getElementById('rProductId').value;
+      const productName = document.getElementById('rProductName').value;
+      const name = document.getElementById('rName').value.trim();
+      const phone = document.getElementById('rPhone').value.trim();
+      const note = document.getElementById('rNote').value.trim();
+
+      try {
+        await db.collection('bookings').add({
+          productId, productName, name, phone, note,
+          status: 'pending',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert('✅ تم استلام طلب الحجز بنجاح! سنتواصل معك قريباً.');
+        modal.style.display = 'none';
+        e.target.reset();
+      } catch(err) {
+        alert('❌ خطأ في الحجز: ' + err.message);
+      }
+    });
+
+    // عرض الحجوزات (للمدير فقط - يمكن إخفاؤه لاحقاً)
+    db.collection('bookings').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+      bookBody.innerHTML = '';
+      document.getElementById('bookCount').textContent = snapshot.size;
+      
+      if(snapshot.empty) {
+        document.getElementById('noBooks').style.display = 'block';
+        return;
+      }
+      document.getElementById('noBooks').style.display = 'none';
+
+      snapshot.forEach((doc, idx) => {
+        const b = doc.data();
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${b.productName}</td>
+          <td>${b.name}</td>
+          <td>${b.phone}</td>
+          <td>${b.createdAt?.toDate().toLocaleDateString('ar-SY') || '...'}</td>
+          <td><span class="badge ${b.status === 'done' ? 'badge-done' : 'badge-pending'}">${b.status === 'done' ? 'مكتمل' : 'قيد الانتظار'}</span></td>
+          <td><button class="btn" onclick="toggleBooking('${doc.id}', '${b.status}')">${b.status === 'done' ? 'إعادة فتح' : 'إنهاء'}</button></td>
+        `;
+        bookBody.appendChild(row);
+      });
+    });
+
+    window.toggleBooking = async (docId, currentStatus) => {
+      await db.collection('bookings').doc(docId).update({
+        status: currentStatus === 'done' ? 'pending' : 'done'
+      });
+    };
+
+    // نافذة الحجز
+    document.querySelector('.close-modal').addEventListener('click', () => modal.style.display = 'none');
+    window.addEventListener('click', e => { if(e.target === modal) modal.style.display = 'none'; });
+
+    // قائمة الجوال
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('active')));
+
+    // تأثير الظهور عند التمرير
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => e.isIntersecting ? e.target.classList.add('visible') : null);
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
