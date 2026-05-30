@@ -51,6 +51,7 @@
     .btn-outline:hover { background: var(--primary); color: #fff; }
     .btn-delete { background: #e74c3c; padding: 6px 12px; font-size: 0.9rem; margin-top: 10px; color: #fff; }
     .btn-reserve { background: #27ae60; padding: 8px 16px; font-size: 0.95rem; margin-top: 10px; color: #fff; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     
     .form-card { background: var(--white); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 30px; }
     .form-row { display: flex; gap: 15px; flex-wrap: wrap; }
@@ -58,6 +59,8 @@
     .form-group label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--primary-dark); }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #e0d5c9; border-radius: 10px; font-family: inherit; transition: var(--transition); background: #faf8f5; }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(192, 122, 91, 0.2); }
+    .file-upload { border: 2px dashed var(--primary-light); padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; transition: var(--transition); background: #fdfbf9; }
+    .file-upload:hover { border-color: var(--primary); background: #fff; }
     .preview-box { margin-top: 10px; width: 100%; max-width: 300px; height: 200px; border-radius: 10px; overflow: hidden; border: 2px solid var(--primary-light); display: none; margin: 10px auto; background: #f9f9f9; }
     .preview-box img { width: 100%; height: 100%; object-fit: contain; }
     
@@ -94,9 +97,6 @@
     .success { background: #d4edda; color: #155724; }
     .error { background: #f8d7da; color: #721c24; }
     .info { background: #cce5ff; color: #004085; }
-    
-    .help-box { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 0.9rem; line-height: 1.8; }
-    .help-box code { background: #f8f9fa; padding: 2px 6px; border-radius: 4px; font-family: monospace; direction: ltr; display: inline-block; }
     
     @media (max-width: 768px) {
       .nav-links { position: fixed; top: 70px; right: -100%; width: 70%; height: calc(100vh - 70px); background: var(--white); flex-direction: column; padding: 30px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: var(--transition); }
@@ -150,15 +150,6 @@
     <h2>إضافة منتج جديد</h2>
     <p class="section-desc">أضفي منتجك الجديد لعرضه على الصفحة</p>
     <div class="form-card">
-      
-      <div class="help-box">
-        <strong>📷 طريقة الحصول على رابط الصورة:</strong><br>
-        1️ ارفعي الصورة إلى مجلد <code>images/</code> في مستودع GitHub.<br>
-        2️⃣ افتحي الصورة واضغطي على زر <strong>Raw</strong> (أو عدّلي الرابط يدوياً).<br>
-        3️⃣ استبدلي <code>github.com</code> بـ <code>raw.githubusercontent.com</code> واحذفي <code>blob/</code>.<br>
-        4️⃣ ألصقي الرابط النهائي في الحقل أدناه.
-      </div>
-
       <form id="productForm">
         <div class="form-row">
           <div class="form-group"><label>اسم المنتج *</label><input type="text" id="pName" required placeholder="مثال: حقيبة بيج كروشي"></div>
@@ -177,16 +168,13 @@
         </div>
         
         <div class="form-group">
-          <label>🔗 رابط الصورة المباشر *</label>
-          <input type="url" id="pImageUrl" required placeholder="https://raw.githubusercontent.com/ahamdo64/tata-fofo/main/images/bag1.jpg">
-        </div>
-        
-        <div class="preview-box" id="previewBox">
-          <img id="previewImg" alt="معاينة">
+          <label>📷 اختيار صورة من الجهاز *</label>
+          <input type="file" id="pFile" accept="image/*" class="file-upload" required>
+          <div class="preview-box" id="previewBox"><img id="previewImg" alt="معاينة"></div>
         </div>
         
         <div class="form-group"><label>وصف المنتج</label><textarea id="pDesc" rows="3" placeholder="وصف مختصر للمنتج..."></textarea></div>
-        <button type="submit" class="btn">✅ إضافة المنتج</button>
+        <button type="submit" id="submitBtn" class="btn">✅ إضافة المنتج</button>
       </form>
     </div>
   </section>
@@ -209,7 +197,7 @@
     <div class="features">
       <div class="feature">🧶 خيوط عالية الجودة</div><div class="feature">✨ تصاميم فريدة</div>
       <div class="feature"> صناعة يدوية 100%</div><div class="feature">🎨 ألوان متنوعة</div>
-      <div class="feature">💰 أسعار منافسة</div><div class="feature"> توصيل متاح</div>
+      <div class="feature"> أسعار منافسة</div><div class="feature"> توصيل متاح</div>
     </div>
   </section>
 
@@ -260,12 +248,12 @@
     </div>
   </div>
 
-  <!-- 🔥 Firebase SDKs (Compat Version) -->
+  <!-- 🔥 Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // ✅ إعدادات مشروعك (لا تعدليها إلا إذا تغير مشروع Firebase)
+    // ✅ إعدادات Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDOvn4mXOfQ-tR_Y1C7kSVN_O0oHchM0YY",
       authDomain: "tata-fofo.firebaseapp.com",
@@ -276,41 +264,55 @@
       appId: "1:352969768605:web:5e0453a0f4d28af79f5e74",
       measurementId: "G-1GZG4ZWEK4"
     };
-
-    // تهيئة Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // عناصر DOM
+    //  إعدادات Cloudinary (مجاني - أنشئ حساباً واحصل على هذه البيانات)
+    const CLOUDINARY_CLOUD_NAME = 'TATA_FOFO'; // استبدلها باسم السحابة الخاص بك
+    const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UPLOAD_PRESET'; // استبدلها بـ Upload Preset من نوع Unsigned
+
     const productForm = document.getElementById('productForm');
     const productsGrid = document.getElementById('productsGrid');
     const bookBody = document.getElementById('bookBody');
     const statusMsg = document.getElementById('statusMsg');
     const previewBox = document.getElementById('previewBox');
     const previewImg = document.getElementById('previewImg');
+    const submitBtn = document.getElementById('submitBtn');
     const modal = document.getElementById('reserveModal');
 
-    // دالة إظهار الرسائل
     function showStatus(text, type) {
       statusMsg.textContent = text;
       statusMsg.className = type;
       statusMsg.style.display = 'block';
-      setTimeout(() => statusMsg.style.display = 'none', 4000);
+      setTimeout(() => statusMsg.style.display = 'none', 5000);
     }
 
-    // معاينة الصورة عند إدخال الرابط
-    document.getElementById('pImageUrl').addEventListener('input', e => {
-      const url = e.target.value.trim();
-      if(url) {
-        previewImg.src = url;
-        previewImg.onload = () => previewBox.style.display = 'block';
-        previewImg.onerror = () => { previewBox.style.display = 'none'; };
-      } else {
-        previewBox.style.display = 'none';
+    // معاينة الصورة فور اختيارها
+    document.getElementById('pFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = ev => { previewImg.src = ev.target.result; previewBox.style.display = 'block'; };
+        reader.readAsDataURL(file);
       }
     });
 
-    // 1️⃣ إضافة منتج (حفظ البيانات + رابط الصورة اليدوي)
+    // دالة رفع الصورة إلى Cloudinary
+    async function uploadImage(file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+      
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if(data.error) throw new Error(data.error.message);
+      return data.secure_url;
+    }
+
+    // 1️⃣ إضافة منتج + رفع صورة تلقائي
     productForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('pName').value.trim();
@@ -318,13 +320,16 @@
       const category = document.getElementById('pCat').value;
       const color = document.getElementById('pColor').value.trim();
       const desc = document.getElementById('pDesc').value.trim();
-      const imageUrl = document.getElementById('pImageUrl').value.trim();
+      const file = document.getElementById('pFile').files[0];
 
-      if(!name || !price || !imageUrl) return showStatus('يرجى تعبئة الحقول الإلزامية ورابط الصورة', 'error');
-      
-      showStatus(' جاري حفظ المنتج في السحابة...', 'info');
+      if(!name || !price || !file) return showStatus('يرجى تعبئة الحقول الإلزامية واختيار صورة', 'error');
+      if(CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') return showStatus('⚠️ يرجى إعداد بيانات Cloudinary في الكود أولاً', 'error');
+
+      showStatus('📤 جاري رفع الصورة وحفظ المنتج...', 'info');
+      submitBtn.disabled = true;
 
       try {
+        const imageUrl = await uploadImage(file);
         await db.collection('products').add({
           name, price, category, color, desc, imageUrl,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -334,29 +339,26 @@
         previewBox.style.display = 'none';
       } catch(err) {
         console.error(err);
-        showStatus('❌ خطأ: ' + err.message, 'error');
+        showStatus(' فشل الرفع: ' + err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
       }
     });
 
-    // 2️ عرض المنتجات (تحديث لحظي)
+    // 2️⃣ عرض المنتجات
     db.collection('products').onSnapshot(snapshot => {
       productsGrid.innerHTML = '';
       document.getElementById('prodCount').textContent = snapshot.size;
-      
       if(snapshot.empty) {
         productsGrid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:var(--text-light); padding:40px 0;">لا توجد منتجات حالياً</p>';
         return;
       }
-
-      // صورة احتياطية مدمجة داخل الكود (SVG) لمنع أخطاء الاتصال الخارجي
-      const fallbackImg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjYwIiB2aWV3Qm94PSIwIDAgMzAwIDI2MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2YwZjBmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzk5OSI+2KjYsdin2YrYqNip2KrYqTwvdGV4dD48L3N2Zz4=";
-
       snapshot.forEach(doc => {
         const p = doc.data();
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-          <img src="${p.imageUrl}" alt="${p.name}" class="product-img" loading="lazy" onerror="this.src='${fallbackImg}'">
+          <img src="${p.imageUrl}" alt="${p.name}" class="product-img" loading="lazy">
           <div class="product-info">
             <h3>${p.name}</h3>
             <p class="price">${p.price} ل.س</p>
@@ -368,10 +370,8 @@
         `;
         productsGrid.appendChild(card);
       });
-
-      // تفعيل أزرار الحجز
       document.querySelectorAll('.btn-reserve').forEach(btn => {
-        btn.addEventListener('click', e => {
+        btn.addEventListener('click', () => {
           document.getElementById('rProductId').value = btn.dataset.id;
           document.getElementById('rProductName').value = btn.dataset.name;
           document.getElementById('modalProdName').textContent = `${btn.dataset.name} - ${btn.dataset.price} ل.س`;
@@ -380,78 +380,62 @@
       });
     });
 
-    // 3️⃣ حذف منتج (يحذف البيانات من Firestore فقط)
+    // 3️⃣ حذف منتج
     window.deleteProduct = async (docId) => {
       if(!confirm('هل أنت متأكد من حذف هذا المنتج؟')) return;
       try {
         await db.collection('products').doc(docId).delete();
         showStatus('✅ تم الحذف بنجاح', 'success');
-      } catch(err) {
-        showStatus(' فشل الحذف: ' + err.message, 'error');
-      }
+      } catch(err) { showStatus('❌ فشل الحذف: ' + err.message, 'error'); }
     };
 
     // 4️⃣ نظام الحجوزات
     document.getElementById('reserveForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const productId = document.getElementById('rProductId').value;
-      const productName = document.getElementById('rProductName').value;
-      const name = document.getElementById('rName').value.trim();
-      const phone = document.getElementById('rPhone').value.trim();
-      const note = document.getElementById('rNote').value.trim();
-
       try {
         await db.collection('bookings').add({
-          productId, productName, name, phone, note,
+          productId: document.getElementById('rProductId').value,
+          productName: document.getElementById('rProductName').value,
+          name: document.getElementById('rName').value.trim(),
+          phone: document.getElementById('rPhone').value.trim(),
+          note: document.getElementById('rNote').value.trim(),
           status: 'pending',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        alert('✅ تم استلام طلب الحجز بنجاح! سنتواصل معك قريباً.');
+        alert('✅ تم استلام طلب الحجز بنجاح!');
         modal.style.display = 'none';
         e.target.reset();
-      } catch(err) {
-        alert('❌ خطأ في الحجز: ' + err.message);
-      }
+      } catch(err) { alert('❌ خطأ: ' + err.message); }
     });
 
-    // عرض الحجوزات لحظياً
     db.collection('bookings').onSnapshot(snapshot => {
       bookBody.innerHTML = '';
       document.getElementById('bookCount').textContent = snapshot.size;
       if(snapshot.empty) { document.getElementById('noBooks').style.display = 'block'; return; }
       document.getElementById('noBooks').style.display = 'none';
-
       snapshot.forEach((doc, idx) => {
         const b = doc.data();
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>${idx + 1}</td><td>${b.productName}</td><td>${b.name}</td><td>${b.phone}</td>
           <td>${b.createdAt?.toDate().toLocaleDateString('ar-SY') || '...'}</td>
-          <td><span style="padding:4px 8px;border-radius:12px;background:${b.status==='done'?'#c8f7dc':'#ffeaa7'};color:${b.status==='done'?'#1e824c':'#d35400'}">${b.status === 'done' ? 'مكتمل' : 'قيد الانتظار'}</span></td>
-          <td><button class="btn" onclick="toggleBooking('${doc.id}', '${b.status}')" style="padding:6px 12px;font-size:0.85rem;">${b.status === 'done' ? 'إعادة فتح' : 'إنهاء'}</button></td>
+          <td><span style="padding:4px 8px;border-radius:12px;background:${b.status==='done'?'#c8f7dc':'#ffeaa7'};color:${b.status==='done'?'#1e824c':'#d35400'}">${b.status==='done'?'مكتمل':'قيد الانتظار'}</span></td>
+          <td><button class="btn" onclick="toggleBooking('${doc.id}','${b.status}')" style="padding:6px 12px;font-size:0.85rem;">${b.status==='done'?'إعادة فتح':'إنهاء'}</button></td>
         `;
         bookBody.appendChild(row);
       });
     });
 
-    window.toggleBooking = async (docId, currentStatus) => {
-      await db.collection('bookings').doc(docId).update({ status: currentStatus === 'done' ? 'pending' : 'done' });
+    window.toggleBooking = async (id, st) => {
+      await db.collection('bookings').doc(id).update({ status: st === 'done' ? 'pending' : 'done' });
     };
 
-    // إغلاق النافذة المنبثقة
     document.querySelector('.close-modal').addEventListener('click', () => modal.style.display = 'none');
     window.addEventListener('click', e => { if(e.target === modal) modal.style.display = 'none'; });
-
-    // قائمة الجوال
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
-    hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
-    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('active')));
-
-    // تأثير الظهور عند التمرير
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => e.isIntersecting ? e.target.classList.add('visible') : null);
-    }, { threshold: 0.1 });
+    document.getElementById('hamburger').addEventListener('click', () => document.getElementById('navLinks').classList.toggle('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active')));
+    
+    const observer = new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')), {threshold:0.1});
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
   </script>
 </body>
